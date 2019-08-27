@@ -24,6 +24,7 @@ class BaseRepository{
     return await openDatabase(path, version: 1, onCreate: (Database db, int version) async {
       await db.execute('CREATE TABLE msPlace('
           'id INTEGER PRIMARY KEY AUTOINCREMENT,'
+          'address TEXT,'
           'description TEXT,'
           'lat REAL,'
           'lang REAL)'

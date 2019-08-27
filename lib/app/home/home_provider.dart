@@ -1,3 +1,4 @@
+import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pin_map/base/base_provider.dart';
 import 'package:pin_map/model/place.dart';
@@ -13,20 +14,49 @@ class HomeProvider extends BaseProvider{
   Set<Marker> _listMarker = Set<Marker>();
   LatLng _lastPosition;
   LatLng _focus;
+  List<Place> _listPlace = List<Place>();
 
   // Getter
   Set<Marker> get listMarker => this._listMarker;
   LatLng get focus => this._focus;
+  List<Place> get listPlace => this._listPlace;
 
   // Setter
   set listMarker(Set<Marker> listMarker) => this._listMarker = listMarker;      
   set focus(LatLng focus) => this._focus = focus;
+  set listPlace(List<Place> listPlace) => this._listPlace = listPlace;
+
+  Future<int> requestInitData() async {
+    try{
+      if(await requestFocus() == EventState.SUCCESS && await requestListPlace() == EventState.SUCCESS){
+        return EventState.SUCCESS;
+      }
+    }
+    on Exception{
+      print('<ERR> Error while loading data.');
+    } 
+    return EventState.ERROR;
+  }
+
+  Future<int> requestFocus() async {
+    try{
+      Place place = await getCurrentLocation();
+      LatLng currentPosition = LatLng(place.lat, place.lang);
+      focus = currentPosition;
+      return EventState.SUCCESS;
+    }
+    on Exception{
+      print('<ERR> Error while loading data.');
+      return EventState.ERROR;
+    }
+  }
 
   Future<int> requestListPlace() async {
     try{
-      List<Place> listPlace = await _placeRepository.requestListPlace();
+      listPlace.clear();      
       Place currentPlace = await getCurrentLocation();
       listPlace.add(currentPlace);
+      listPlace.addAll(await _placeRepository.requestListPlace());
 
       listMarker.clear();
       for(Place place in listPlace){
@@ -41,9 +71,7 @@ class HomeProvider extends BaseProvider{
             icon: BitmapDescriptor.defaultMarker
           )
         );
-      }
-      
-      focus = LatLng(currentPlace.lat, currentPlace.lang);
+      }      
       return EventState.SUCCESS;
     }
     on Exception{
@@ -58,9 +86,8 @@ class HomeProvider extends BaseProvider{
 
   Future<Place> getCurrentLocation() async {
     LatLng position = await LocationUtil.getCurrentPosition();
-    Place place = Place.seData(0, "Your Location", position.latitude, position.longitude);
+    Address address = await LocationUtil.getPositionDescription(position);
+    Place place = Place.seData(0, address.addressLine, "Your Location", position.latitude, position.longitude);
     return place;
   }
-
-
 }
