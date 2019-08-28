@@ -86,8 +86,8 @@ class HomeProvider extends BaseProvider{
 
   Future<Place> getCurrentLocation() async {
     LatLng position = await LocationUtil.getCurrentPosition();
-    Address address = await LocationUtil.getPositionDescription(position);
-    Place place = Place.seData(0, address.addressLine, "Your Location", position.latitude, position.longitude);
+    List<Address> listAddress = await LocationUtil.getPositionDescription(position);
+    Place place = Place.seData(0, listAddress.first.addressLine, "Your Location", position.latitude, position.longitude);
     return place;
   }
 }

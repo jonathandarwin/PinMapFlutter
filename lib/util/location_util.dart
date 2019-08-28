@@ -9,9 +9,14 @@ class LocationUtil{
     return LatLng(loc['latitude'], loc['longitude']);    
   }
 
-  static Future<Address> getPositionDescription(LatLng position) async {
+  static Future<List<Address>> getPositionDescription(LatLng position) async {
     Coordinates coor = Coordinates(position.latitude, position.longitude);
     List<Address> _listAddress = await Geocoder.local.findAddressesFromCoordinates(coor);
-    return _listAddress.first;
+    return _listAddress;
+  }
+
+  static Future<List<Address>> getAddressByDescription(String desc) async {
+    List<Address> _listAddress = await Geocoder.google('AIzaSyBBYMBG7l5b3art73WSJ44DA1P521DkrGw').findAddressesFromQuery(desc);
+    return _listAddress;
   }
 }

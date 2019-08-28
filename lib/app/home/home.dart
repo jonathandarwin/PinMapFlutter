@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pin_map/app/home/home_provider.dart';
+import 'package:pin_map/app/search/search.dart';
 import 'package:pin_map/model/place.dart';
 import 'package:pin_map/state/event_state.dart';
 import 'package:provider/provider.dart';
@@ -122,7 +123,13 @@ class IconSearch extends StatelessWidget{
       child: Container(
         margin: EdgeInsets.all(10.0),
         child: FloatingActionButton(
-          onPressed: (){},
+          onPressed: (){
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => SearchLayout()
+              )
+            );
+          },
           child: Icon(
             Icons.search
           ),
