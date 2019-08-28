@@ -6,7 +6,7 @@ import 'package:pin_map/util/location_util.dart';
 
 class SearchProvider extends BaseProvider{
   String _search;
-  List<Place> _listPlace;
+  List<Place> _listPlace = List<Place>();
 
   String get search => this._search;
   List<Place> get listPlace => this._listPlace;
@@ -16,10 +16,9 @@ class SearchProvider extends BaseProvider{
   
   Future<int> doSearch() async {
     try{
-      List<Address> listAddress = await LocationUtil.getAddressByDescription(search);      
-      print(listAddress.length);
-      if(listAddress != null && listAddress.length > 0){
-        listPlace.clear();
+      List<Address> listAddress = await LocationUtil.getAddressByDescription(search);            
+      listPlace.clear();
+      if(listAddress != null && listAddress.length > 0){        
         for(int i=0; i<listAddress.length; i++){
           Address address = listAddress[i];
           listPlace.add(

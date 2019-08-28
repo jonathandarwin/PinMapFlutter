@@ -16,7 +16,7 @@ class LocationUtil{
   }
 
   static Future<List<Address>> getAddressByDescription(String desc) async {
-    List<Address> _listAddress = await Geocoder.google('AIzaSyBBYMBG7l5b3art73WSJ44DA1P521DkrGw').findAddressesFromQuery(desc);
+    List<Address> _listAddress = await Geocoder.local.findAddressesFromQuery(desc);
     return _listAddress;
   }
 }

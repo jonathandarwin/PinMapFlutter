@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pin_map/app/search/search_provider.dart';
+import 'package:pin_map/model/place.dart';
 import 'package:pin_map/state/event_state.dart';
 import 'package:provider/provider.dart';
 
@@ -10,19 +11,11 @@ class SearchLayout extends StatelessWidget{
       builder: (_) => SearchProvider(),
       child: SafeArea(
         child: Scaffold(
-          body: Container(
-            margin: EdgeInsets.all(10.0),
-            child: Column(
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    TextFieldSearch(),
-                    ButtonSearch()
-                  ],
-                )
-              ],
-            ),
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            title: TextFieldSearch(),
           ),
+          body: ListAddress(),
         ),
       ),
     );
@@ -33,13 +26,29 @@ class TextFieldSearch extends StatelessWidget{
   @override
   Widget build(BuildContext context) {    
     SearchProvider _provider = Provider.of<SearchProvider>(context, listen: false);
-
-    return Expanded(
-      flex: 7,
-      child: TextField(
-        onChanged: (text) => _provider.search = text,
+    return TextField(
+      onChanged: (text) => _provider.search = text,      
+      cursorColor: Colors.white,
+      style: TextStyle(
+        color: Colors.white
       ),
-    );
+      decoration: InputDecoration(
+        hintText: 'Search',
+        labelStyle: TextStyle(
+          color: Colors.white
+        ),
+        enabledBorder: UnderlineInputBorder(                
+          borderSide: BorderSide(
+            color: Colors.white
+          )
+        ),
+        focusedBorder: UnderlineInputBorder(                
+          borderSide: BorderSide(
+            color: Colors.white
+          )
+        )
+      ),
+    );      
   }
 }
 
@@ -66,7 +75,10 @@ class ButtonSearch extends StatelessWidget{
             }
           },
           child: Text(
-            'Search'
+            'Search',
+            style: TextStyle(
+              color: Colors.white
+            ),
           ),
         ),
       ),
@@ -79,16 +91,30 @@ class ListAddress extends StatelessWidget{
   Widget build(BuildContext context) {
     SearchProvider _provider = Provider.of<SearchProvider>(context);
 
-    return Expanded(
-      flex: 8,
-      child: Container(
-        child: ListView.builder(
-          itemCount: _provider.listPlace.length,
-          itemBuilder: (context, i) {
-            return Text('Testing');
-          },
-        )
-      ),
+    return Container(
+      margin: EdgeInsets.all(15.0),
+      child: ListView.builder(
+        itemCount: _provider.listPlace.length,
+        itemBuilder: (context, i) {
+          Place place = _provider.listPlace[i];
+          return Row(
+            children: <Widget>[
+              Expanded(
+                flex: 2,
+                child: Icon(
+                  Icons.person_pin_circle,
+                  size: 30.0,
+                  color: Colors.red,
+                ),
+              ),
+              Expanded(
+                flex: 8,
+                child: Text(place.address)
+              )
+            ],
+          );
+        },
+      )
     );
   }
 }
