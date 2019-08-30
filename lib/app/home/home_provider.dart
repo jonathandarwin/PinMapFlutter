@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pin_map/base/base_provider.dart';
@@ -15,11 +17,13 @@ class HomeProvider extends BaseProvider{
   LatLng _lastPosition;
   LatLng _focus;
   List<Place> _listPlace = List<Place>();
+  GoogleMapController _controller;
 
   // Getter
   Set<Marker> get listMarker => this._listMarker;
   LatLng get focus => this._focus;
   List<Place> get listPlace => this._listPlace;
+  GoogleMapController get controller => this._controller;
 
   // Setter
   set listMarker(Set<Marker> listMarker) => this._listMarker = listMarker;      
@@ -27,6 +31,7 @@ class HomeProvider extends BaseProvider{
     this._focus = focus;    
   }
   set listPlace(List<Place> listPlace) => this._listPlace = listPlace;
+  set controller(GoogleMapController controller) => this._controller = controller;
 
   Future<int> requestInitData() async {
     try{

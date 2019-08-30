@@ -24,25 +24,30 @@ class HomeLayout extends StatelessWidget{
 
 class LoadData extends StatelessWidget{
   @override
-  Widget build(BuildContext context) {    
-    HomeProvider _provider = Provider.of<HomeProvider>(context);
-
-    return FutureBuilder(
-      future: _provider.requestInitData(),
-      initialData: null,
-      builder: (context, snapshot){
-        if(snapshot.connectionState == ConnectionState.done){
-          switch(snapshot.data){
-            case EventState.SUCCESS:            
-              return RootHome();
-              break;
-            case EventState.ERROR:
-              return ErrorMessage();
-              break;
+  Widget build(BuildContext context) {        
+    return Consumer<HomeProvider>(
+      builder: (context, provider, child) => FutureBuilder(
+        future: provider.requestInitData(),
+        initialData: null,
+        builder: (context, snapshot){
+          if(snapshot.connectionState == ConnectionState.done){
+            switch(snapshot.data){
+              case EventState.SUCCESS:            
+                return Column(
+                  children: <Widget>[
+                    Map(),
+                    ListAddress()                             
+                  ],
+                );
+                break;
+              case EventState.ERROR:
+                return ErrorMessage();
+                break;
+            }
           }
-        }
-        return Loader();
-      },
+          return Loader();
+        },
+      ),      
     );
   }
 
@@ -72,22 +77,9 @@ class ErrorMessage extends StatelessWidget{
   }
 }
 
-class RootHome extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {    
-    return Column(
-      children: <Widget>[
-        Map(),
-        ListAddress()
-      ],
-    );
-  }
-}
-
 class Map extends StatelessWidget{
   @override
-  Widget build(BuildContext context) {    
-    final Completer<GoogleMapController> _controller = Completer();        
+  Widget build(BuildContext context) {        
 
     return Expanded(
       child: Stack(
@@ -98,7 +90,7 @@ class Map extends StatelessWidget{
               markers: provider.listMarker,
               onCameraMove: provider.cameraMove,
               onMapCreated: (GoogleMapController controller){
-                _controller.complete(controller);
+                provider.controller = controller;
               },
               mapType: MapType.normal,
               initialCameraPosition: CameraPosition(
@@ -154,7 +146,15 @@ class ListAddress extends StatelessWidget{
             if(i == 0){
               // NOT DISMISSIBLE
               return  GestureDetector(
-                onTap: (){                
+                onTap: (){                               
+                  provider.controller.animateCamera(
+                    CameraUpdate.newCameraPosition(
+                      CameraPosition(
+                        target: LatLng(place.lat, place.lang),
+                        zoom: 15
+                      )
+                    )
+                  );
                 },
                 child: Container(              
                   margin: EdgeInsets.all(15.0),              
@@ -193,9 +193,18 @@ class ListAddress extends StatelessWidget{
                 if(!await provider.deletePlace(place)){
                   Toast.show('Error. Please try again', context, duration: Toast.LENGTH_LONG);
                 }
+                provider.refresh();
               },
               child: GestureDetector(
-                onTap: (){                
+                onTap: (){      
+                  provider.controller.animateCamera(
+                    CameraUpdate.newCameraPosition(
+                      CameraPosition(
+                        target: LatLng(place.lat, place.lang),
+                        zoom: 15
+                      )
+                    )
+                  );
                 },
                 child: Container(              
                   margin: EdgeInsets.all(15.0),              
