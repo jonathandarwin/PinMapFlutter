@@ -14,4 +14,10 @@ class PlaceRepository extends BaseRepository{
     var result = await db.rawInsert('INSERT INTO msPlace(address, description, lat, lang) VALUES(?,?,?,?)', [place.address, place.description, place.lat, place.lang]);
     return result;
   }
+
+  Future<int> deletePlace(Place place) async {
+    final db = await database;
+    var result = await db.delete('msPlace', where: 'id = ${place.id}');
+    return result;
+  }
 }

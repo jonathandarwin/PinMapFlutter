@@ -6,6 +6,7 @@ import 'package:pin_map/app/search/search.dart';
 import 'package:pin_map/model/place.dart';
 import 'package:pin_map/state/event_state.dart';
 import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 class HomeLayout extends StatelessWidget{
   @override
@@ -150,32 +151,79 @@ class ListAddress extends StatelessWidget{
           itemCount: provider.listPlace.length,
           itemBuilder: (context, i){
             Place place = provider.listPlace[i];
-
-            return Container(              
-              margin: EdgeInsets.all(15.0),              
-              child: Row(
-                children: <Widget>[
-                  // ICON
-                  Expanded(
-                    flex: 2,
-                    child: Icon(
-                      Icons.person_pin_circle,
-                      size: 30.0,
-                      color: Colors.red,
-                    ),
+            if(i == 0){
+              // NOT DISMISSIBLE
+              return  GestureDetector(
+                onTap: (){                
+                },
+                child: Container(              
+                  margin: EdgeInsets.all(15.0),              
+                  child: Row(
+                    children: <Widget>[
+                      // ICON
+                      Expanded(
+                        flex: 2,
+                        child: Icon(
+                          Icons.person_pin_circle,
+                          size: 30.0,
+                          color: Colors.red,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 8,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            TextDescription(place.description),
+                            SizedBox(height: 5.0),
+                            TextAddress(place.address)
+                          ],
+                        ),
+                      )
+                    ],
                   ),
-                  Expanded(
-                    flex: 8,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        TextDescription(place.description),
-                        SizedBox(height: 5.0),
-                        TextAddress(place.address)
-                      ],
-                    ),
-                  )
-                ],
+                ),
+              );
+            }
+
+            // DISMISSIBLE
+            return Dismissible(              
+              key: Key(place.id.toString()),
+              onDismissed: (direction) async {                
+                if(!await provider.deletePlace(place)){
+                  Toast.show('Error. Please try again', context, duration: Toast.LENGTH_LONG);
+                }
+              },
+              child: GestureDetector(
+                onTap: (){                
+                },
+                child: Container(              
+                  margin: EdgeInsets.all(15.0),              
+                  child: Row(
+                    children: <Widget>[
+                      // ICON
+                      Expanded(
+                        flex: 2,
+                        child: Icon(
+                          Icons.person_pin_circle,
+                          size: 30.0,
+                          color: Colors.red,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 8,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            TextDescription(place.description),
+                            SizedBox(height: 5.0),
+                            TextAddress(place.address)
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
             );
           },

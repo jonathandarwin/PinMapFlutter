@@ -23,7 +23,9 @@ class HomeProvider extends BaseProvider{
 
   // Setter
   set listMarker(Set<Marker> listMarker) => this._listMarker = listMarker;      
-  set focus(LatLng focus) => this._focus = focus;
+  set focus(LatLng focus){
+    this._focus = focus;    
+  }
   set listPlace(List<Place> listPlace) => this._listPlace = listPlace;
 
   Future<int> requestInitData() async {
@@ -89,5 +91,11 @@ class HomeProvider extends BaseProvider{
     List<Address> listAddress = await LocationUtil.getPositionDescription(position);
     Place place = Place.seData(0, listAddress.first.addressLine, "Your Location", position.latitude, position.longitude);
     return place;
+  }
+
+  Future<bool> deletePlace(Place place) async {
+    if(await _placeRepository.deletePlace(place) >= 1)
+      return true;    
+    return false;
   }
 }
