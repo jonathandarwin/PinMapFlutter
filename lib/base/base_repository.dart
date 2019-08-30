@@ -23,10 +23,10 @@ class BaseRepository{
     String path = join(documentDirectory.path + "pinmap.db");
     return await openDatabase(path, version: 1, onCreate: (Database db, int version) async {
       await db.execute('CREATE TABLE msPlace('
-          'id INTEGER PRIMARY KEY AUTOINCREMENT,'
-          'address TEXT,'
-          'description TEXT,'
-          'lat REAL,'
+          'id INTEGER PRIMARY KEY AUTOINCREMENT,' +
+          'address TEXT,' +
+          'description TEXT,' +
+          'lat REAL,' +
           'lang REAL)'
       );
     });

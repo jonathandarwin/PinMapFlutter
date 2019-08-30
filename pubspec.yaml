@@ -29,6 +29,7 @@ dependencies:
   location: ^1.4.1
   provider: 3.0.0+1
   sqflite : any
+  toast: 0.1.5
   path_provider : any
 
 dev_dependencies:

@@ -8,4 +8,10 @@ class PlaceRepository extends BaseRepository{
     List<Place> listPlace = result.isNotEmpty ? result.map((model) => Place.fromJson(model)).toList() : [];
     return listPlace;
   }
+
+  Future<int> insertPlace(Place place) async {
+    final db = await database;
+    var result = await db.rawInsert('INSERT INTO msPlace(address, description, lat, lang) VALUES(?,?,?,?)', [place.address, place.description, place.lat, place.lang]);
+    return result;
+  }
 }

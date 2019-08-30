@@ -24,7 +24,7 @@ class HomeLayout extends StatelessWidget{
 class LoadData extends StatelessWidget{
   @override
   Widget build(BuildContext context) {    
-    HomeProvider _provider = Provider.of<HomeProvider>(context, listen: false);
+    HomeProvider _provider = Provider.of<HomeProvider>(context);
 
     return FutureBuilder(
       future: _provider.requestInitData(),
@@ -128,7 +128,9 @@ class IconSearch extends StatelessWidget{
               MaterialPageRoute(
                 builder: (_) => SearchLayout()
               )
-            );
+            ).then((value){
+              _provider.refresh();
+            });
           },
           child: Icon(
             Icons.search
